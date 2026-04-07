@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inorganic Lab Pro </title>
+    <style>
+        :root { --cyan: #00f2ff; --bg: #05080a; --panel: #12151d; --text: #e0e6ed; --green: #00ff88; --accent: #ff4d4d; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); }
+        nav { padding: 1.2rem; background: #000; border-bottom: 2px solid var(--cyan); text-align: center; font-weight: bold; }
+        
+        .main-container { display: flex; flex-wrap: wrap; gap: 20px; padding: 20px; max-width: 1200px; margin: auto; }
+        .salt-display-board { width: 100%; background: #000; border: 2px solid #222; border-radius: 15px; padding: 15px; display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 10px; }
+        .slot { padding: 12px 25px; background: #1a1d23; border: 1px dashed var(--cyan); border-radius: 10px; color: var(--cyan); font-weight: bold; min-width: 130px; text-align: center; }
+
+        .config-panel { flex: 1; min-width: 340px; background: var(--panel); padding: 25px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.05); }
+        .section-title { font-size: 0.85rem; color: var(--cyan); margin: 20px 0 10px; font-weight: bold; text-transform: uppercase; border-left: 3px solid var(--cyan); padding-left: 10px; }
+        .selection-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
+        .sel-btn { padding: 10px 5px; background: #000; border: 1px solid #333; color: #888; border-radius: 8px; cursor: pointer; font-size: 0.75rem; transition: 0.3s; }
+        .sel-btn.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0, 242, 255, 0.1); }
+        
+        .btn-prepare { width: 100%; padding: 16px; background: var(--cyan); color: #000; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1rem; margin: 10px 0; }
+        .reagent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .r-btn { padding: 12px; background: transparent; border: 1.5px solid var(--cyan); color: var(--cyan); border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
+
+        .lab-view { flex: 1.3; min-width: 360px; background: #000; border-radius: 30px; border: 1px solid #222; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; position: relative; }
+        .test-tube-container { position: relative; margin-bottom: 20px; }
+        .test-tube { width: 70px; height: 280px; border: 4px solid #444; border-top: none; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; position: relative; overflow: hidden; background: rgba(255,255,255,0.03); z-index: 5; }
+        .liquid { position: absolute; bottom: 0; width: 100%; height: 45%; background: rgba(0,242,255,0.15); transition: 1s; z-index: 1; }
+        .ppt { position: absolute; bottom: 0; width: 100%; height: 0%; transition: 0.8s; z-index: 2; }
+
+        .gas-container { position: absolute; bottom: 40%; left: 50%; transform: translateX(-50%); width: 50px; height: 100px; display: none; z-index: 10; }
+        .bubble { position: absolute; bottom: 0; background: rgba(255,255,255,0.6); border-radius: 50%; animation: bubble-up 2s infinite ease-in; }
+        @keyframes bubble-up { 0% { transform: translateY(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-150px); opacity: 0; } }
+
+        .guide-box { width: 100%; color: var(--green); border: 1px dashed var(--green); padding: 15px; border-radius: 12px; margin-top: 15px; font-size: 0.9rem; background: rgba(0, 255, 136, 0.05); }
+        .report-box { width: 100%; background: #0a0c10; border-left: 5px solid var(--cyan); padding: 12px; margin-top: 15px; border-radius: 10px; font-family: monospace; font-size: 0.85rem; max-height: 180px; overflow-y: auto; color: #ccc; }
+        .control-row { display: flex; gap: 10px; width: 100%; margin-top: 20px; }
+        .reset-btn { flex: 1; padding: 12px; color: var(--accent); border: 1.5px solid var(--accent); background: none; border-radius: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+
+<nav>
+    <a href="index.html" class="logo">SCIENCE WORLD</a>
+</nav>
+<nav>INORGANIC LAB PRO </nav>
+
+<div class="main-container">
+    <div class="salt-display-board">
+        <div id="cat-display" class="slot">Cation</div>
+        <div style="font-size: 1.5rem; color: #444;">+</div>
+        <div id="ani-display" class="slot">Anion</div>
+    </div>
+
+    <div class="config-panel">
+        <div class="section-title">1. Select Salt</div>
+        <div class="selection-grid" id="cat-grid">
+            <button class="sel-btn" onclick="setPart('cat', 'Na', 'Na⁺')">Na⁺</button>
+            <button class="sel-btn" onclick="setPart('cat', 'Ca', 'Ca²⁺')">Ca²⁺</button>
+            <button class="sel-btn" onclick="setPart('cat', 'Cu', 'Cu²⁺')">Cu²⁺</button>
+            <button class="sel-btn" onclick="setPart('cat', 'Zn', 'Zn²⁺')">Zn²⁺</button>
+            <button class="sel-btn" onclick="setPart('cat', 'Fe2', 'Fe²⁺')">Fe²⁺</button>
+            <button class="sel-btn" onclick="setPart('cat', 'Fe3', 'Fe³⁺')">Fe³⁺</button>
+            <button class="sel-btn" onclick="setPart('cat', 'NH4', 'NH₄⁺')">NH₄⁺</button>
+            <button class="sel-btn" onclick="setPart('cat', 'Al', 'Al³⁺')">Al³⁺</button>
+        </div>
+        <div class="selection-grid" id="ani-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <button class="sel-btn" onclick="setPart('ani', 'Cl', 'Cl⁻')">Cl⁻</button>
+            <button class="sel-btn" onclick="setPart('ani', 'SO4', 'SO₄²⁻')">SO₄²⁻</button>
+            <button class="sel-btn" onclick="setPart('ani', 'CO3', 'CO₃²⁻')">CO₃²⁻</button>
+        </div>
+        <button class="btn-prepare" onclick="prepareLab()">Prepare Solution</button>
+
+        <div class="section-title">2. Lab Reagents</div>
+        <div class="reagent-grid">
+            <button class="r-btn" onclick="runTest('NaOH')">NaOH</button>
+            <button class="r-btn" onclick="runTest('NH4OH')">NH₄OH</button>
+            <button class="r-btn" onclick="runTest('HCl')">dil. HCl</button>
+            <button class="r-btn" onclick="runTest('AgNO3')">AgNO₃</button>
+            <button class="r-btn" onclick="runTest('BaNO3')">Ba(NO₃)₂</button>
+            <button class="r-btn" onclick="runTest('K4FeCN6')">K₄[Fe(CN)₆]</button>
+            <button class="r-btn" onclick="runTest('K2H2Sb2O7')">K₂H₂Sb₂O₇</button>
+            <button class="r-btn" onclick="runTest('Nessler')">Nessler's</button>
+            <button class="r-btn" style="grid-column: span 2;" onclick="runTest('NH4C2O4')">(NH₄)₂C₂O₄ (Oxalate)</button>
+        </div>
+        <div class="control-row">
+            <button class="reset-btn" style="color: #ffcc00; border-color: #ffcc00;" onclick="clearTube()">Clear Tube</button>
+            <button class="reset-btn" onclick="location.reload()">Full Reset</button>
+        </div>
+    </div>
+
+    <div class="lab-view">
+        <div class="test-tube-container">
+            <div class="gas-container" id="gas-eff">
+                <div class="bubble" style="left:20%; width:10px; height:10px; animation-delay:0s;"></div>
+                <div class="bubble" style="left:50%; width:14px; height:14px; animation-delay:0.5s;"></div>
+                <div class="bubble" style="left:80%; width:8px; height:8px; animation-delay:1s;"></div>
+            </div>
+            <div class="test-tube">
+                <div id="liq" class="liquid"></div>
+                <div id="ppt" class="ppt"></div>
+            </div>
+        </div>
+        <div id="guide" class="guide-box"><b>Guide:</b> Prepare solution to start.</div>
+        <div class="report-box" id="log-box"><div id="log-content">System Ready.</div></div>
+    </div>
+</div>
+
+<script>
+    let salt = { cat: '', ani: '' };
+    let logs = [];
+    let state = { catFound: false, aniFound: false, baPpt: false };
+
+    function setPart(t, v, n) {
+        salt[t] = v;
+        document.getElementById(t+'-display').innerText = n;
+        document.querySelectorAll(`#${t}-grid .sel-btn`).forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+    }
+
+    function addLog(msg) {
+        logs.push("» " + msg);
+        document.getElementById('log-content').innerHTML = logs.join("<br>");
+        document.getElementById('log-box').scrollTop = 9999;
+    }
+
+    function updateGuide(txt) { document.getElementById('guide').innerHTML = `<b>Guide:</b> ${txt}`; }
+
+    function prepareLab() {
+        if(!salt.cat || !salt.ani) return alert("Select Salt Components!");
+        logs = []; clearTube();
+        state = { catFound: false, aniFound: false, baPpt: false };
+        addLog("<b>Solution Prepared.</b>");
+        updateGuide("Add <b>NaOH</b> or <b>NH₄OH</b> for Cation identification.");
+    }
+
+    function runTest(r) {
+        if(!salt.cat) return;
+        const p = document.getElementById('ppt'), l = document.getElementById('liq');
+
+        if(r === 'NaOH' || r === 'NH4OH') {
+            p.style.height = '22%';
+            if(salt.cat === 'Cu') {
+                if(r === 'NH4OH') { l.style.backgroundColor = '#0019ff'; p.style.height = '0'; addLog("Added NH₄OH: Deep blue complex. <b>Cu²⁺ Confirmed!</b>"); state.catFound = true; }
+                else { p.style.backgroundColor = '#87CEEB'; addLog("Added NaOH: Light blue ppt. <b>Possible Cu²⁺.</b>"); updateGuide("Confirm with <b>K₄[Fe(CN)₆]</b>."); }
+            } else if(salt.cat === 'Fe2') { p.style.backgroundColor = '#4F7942'; addLog("Added "+r+": Dirty green ppt. <b>Possible Fe²⁺.</b>"); updateGuide("Confirm with <b>K₄[Fe(CN)₆]</b>."); }
+            else if(salt.cat === 'Fe3') { p.style.backgroundColor = '#8B4513'; addLog("Added "+r+": Red-brown ppt. <b>Possible Fe³⁺.</b>"); updateGuide("Confirm with <b>K₄[Fe(CN)₆]</b>."); }
+            else if(salt.cat === 'Al' || salt.cat === 'Zn' || salt.cat === 'Ca') { p.style.backgroundColor = 'white'; addLog("Added "+r+": White ppt. <b>Possible Al³⁺, Zn²⁺, or Ca²⁺.</b>"); updateGuide("Test with <b>Oxalate</b> for Ca²⁺ or <b>K₄[Fe(CN)₆]</b> for Zn²⁺."); }
+            else { p.style.height = '0'; addLog("Added "+r+": No reaction. <b>Possible Na⁺ or NH₄⁺.</b>"); updateGuide("Try <b>Nessler's</b> or <b>K₂H₂Sb₂O₇</b>."); }
+        }
+        else if(r === 'K4FeCN6') {
+            p.style.height = '25%';
+            if(salt.cat === 'Cu') { p.style.backgroundColor = '#7B3F00'; addLog("Added K₄[Fe(CN)₆]: Chocolate brown ppt. <b>Cu²⁺ Confirmed!</b>"); state.catFound = true; }
+            else if(salt.cat === 'Fe2') { p.style.backgroundColor = '#003399'; addLog("Added K₄[Fe(CN)₆]: Deep blue ppt. <b>Fe²⁺ Confirmed!</b>"); state.catFound = true; }
+            else if(salt.cat === 'Fe3') { p.style.backgroundColor = '#000080'; addLog("Added K₄[Fe(CN)₆]: <b>Prussian Blue ppt. Fe³⁺ Confirmed!</b>"); state.catFound = true; }
+            else if(salt.cat === 'Zn') { p.style.backgroundColor = 'white'; addLog("Added K₄[Fe(CN)₆]: White ppt. <b>Zn²⁺ Confirmed!</b>"); state.catFound = true; }
+            else { addLog("No specific reaction."); }
+        }
+        else if(r === 'Nessler' && salt.cat === 'NH4') { p.style.height = '25%'; p.style.backgroundColor = '#804000'; addLog("Added Nessler's: Red-brown ppt. <b>NH₄⁺ Confirmed!</b>"); state.catFound = true; }
+        else if(r === 'K2H2Sb2O7' && salt.cat === 'Na') { p.style.height = '25%'; p.style.backgroundColor = 'white'; addLog("Added K₂H₂Sb₂O₇: White ppt. <b>Na⁺ Confirmed!</b>"); state.catFound = true; }
+        else if(r === 'NH4C2O4' && salt.cat === 'Ca') { p.style.height = '25%'; p.style.backgroundColor = 'white'; addLog("Added Oxalate: White crystalline ppt. <b>Ca²⁺ Confirmed!</b>"); state.catFound = true; }
+        
+        else if(r === 'AgNO3') {
+            if(salt.ani === 'Cl') { p.style.height = '25%'; p.style.backgroundColor = 'white'; addLog("Added AgNO₃: Curdy white ppt. <b>Cl⁻ Confirmed!</b>"); state.aniFound = true; }
+            else { addLog("Added AgNO₃: No Reaction."); updateGuide("Try <b>Ba(NO₃)₂</b>."); }
+        }
+        else if(r === 'BaNO3') {
+            if(salt.ani === 'SO4' || salt.ani === 'CO3') { p.style.height = '25%'; p.style.backgroundColor = 'white'; state.baPpt = true; addLog("Added Ba(NO₃)₂: White ppt. <b>Confirm with HCl.</b>"); updateGuide("Add <b>dil. HCl</b>."); }
+            else { addLog("Added Ba(NO₃)₂: No reaction."); }
+        }
+        else if(r === 'HCl') {
+            if(state.baPpt && salt.ani === 'CO3') { showGas(); p.style.height = '0'; addLog("HCl added: Ppt dissolved with CO₂ gas. <b>CO₃²⁻ Confirmed!</b>"); state.aniFound = true; }
+            else if(state.baPpt && salt.ani === 'SO4') { addLog("HCl added: <b>Ppt did not dissolve. SO₄²⁻ Confirmed!</b>"); state.aniFound = true; }
+            else { addLog("Added HCl: No reaction."); }
+        }
+        checkStatus();
+    }
+
+    function showGas() { const g = document.getElementById('gas-eff'); g.style.display = 'block'; setTimeout(() => g.style.display='none', 5000); }
+    function checkStatus() {
+        if(state.catFound && state.aniFound) updateGuide("<span style='color:yellow'>Analysis Complete! Salt identified.</span>");
+        else if(state.catFound) updateGuide("Cation confirmed. Now identify Anion (Try <b>AgNO₃</b> or <b>Ba(NO₃)₂</b>).");
+    }
+    function clearTube() { document.getElementById('ppt').style.height = '0'; document.getElementById('liq').style.backgroundColor = 'rgba(0,242,255,0.15)'; document.getElementById('gas-eff').style.display='none'; state.baPpt=false; }
+</script>
+</body>
+</html>
