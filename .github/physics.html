@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Calculator | Step-by-Step</title>
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --bg: #020408;
+            --card: rgba(255, 255, 255, 0.05);
+            --accent: #ffcc00;
+        }
+
+        body {
+            margin: 0; font-family: 'Segoe UI', sans-serif;
+            background: var(--bg); color: white; line-height: 1.6;
+        }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 8%; background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px); border-bottom: 1px solid rgba(0, 242, 255, 0.2);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .logo { font-size: 1.6rem; font-weight: bold; color: var(--primary); text-decoration: none; }
+        nav a { color: white; text-decoration: none; margin-left: 20px; transition: 0.3s; }
+
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+
+        header { text-align: center; margin-bottom: 50px; }
+        header h1 { font-size: 2.5rem; letter-spacing: 2px; color: var(--primary); }
+
+        .calc-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .calc-card {
+            background: var(--card); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px; padding: 25px; transition: 0.3s;
+            display: flex; flex-direction: column;
+        }
+        .calc-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .calc-card h3 { margin-top: 0; color: var(--accent); border-bottom: 1px solid #333; padding-bottom: 10px; }
+
+        .input-group { margin: 12px 0; }
+        label { display: block; font-size: 0.8rem; margin-bottom: 4px; color: #aaa; }
+        input {
+            width: 90%; padding: 10px; background: #000; border: 1px solid #444;
+            color: var(--primary); border-radius: 8px; font-weight: bold; outline: none;
+        }
+
+        .solve-btn {
+            width: 100%; padding: 12px; background: var(--primary); color: black;
+            border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+            margin-top: 10px; text-transform: uppercase;
+        }
+
+        .result-area {
+            margin-top: 15px; padding: 15px; background: rgba(0,0,0,0.5);
+            border-radius: 10px; display: none; font-family: 'Courier New', monospace;
+            border-left: 4px solid var(--primary); font-size: 0.9rem;
+        }
+        .step { color: #999; margin-bottom: 4px; }
+        .final { color: #00f2ff; font-weight: bold; margin-top: 8px; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="logo">SCIENCE WORLD</a>
+    <div>
+        <a href="index.html">Home</a>
+        <a href="physics.html" style="color:var(--primary)">Physics</a>
+        <a href="chemistry.html">Chemistry Lab</a>
+        <a href="astronomy.html">Astronomy</a>
+    </div>
+</nav>
+
+<div class="container">
+    <header>
+        <h1>PHYSICS CALCULATION HUB</h1>
+        <p>ভ্যালু ইনপুট দাও, সমাধান বুঝে নাও</p>
+    </header>
+
+    <div class="calc-grid">
+        <div class="calc-card">
+            <h3>১. গতির সমীকরণ (v = u + at)</h3>
+            <div class="input-group"><label>আদি বেগ, u (m/s)</label><input type="number" id="u1" value="0"></div>
+            <div class="input-group"><label>ত্বরণ, a (m/s²)</label><input type="number" id="a1" value="9.8"></div>
+            <div class="input-group"><label>সময়, t (s)</label><input type="number" id="t1" value="5"></div>
+            <button class="solve-btn" onclick="solveMotion()">Calculate Velocity</button>
+            <div id="res-motion" class="result-area"></div>
+        </div>
+
+        <div class="calc-card" style="grid-column: span 1;">
+            <h3>২. প্রাস (Projectile Motion)</h3>
+            <div class="input-group"><label>আদি বেগ, v₀ (m/s)</label><input type="number" id="pv0" value="30"></div>
+            <div class="input-group"><label>ক্ষেপণ কোণ, θ (degree)</label><input type="number" id="pdeg" value="45"></div>
+            <button class="solve-btn" onclick="solveProjectile()">Calculate Projectile Stats</button>
+            <div id="res-projectile" class="result-area"></div>
+        </div>
+
+        <div class="calc-card">
+            <h3>৩. নিউটনের সূত্র (F = ma)</h3>
+            <div class="input-group"><label>ভর, m (kg)</label><input type="number" id="m2" value="10"></div>
+            <div class="input-group"><label>বল, F (N)</label><input type="number" id="f2" value="50"></div>
+            <button class="solve-btn" onclick="solveForce()">Calculate Acceleration</button>
+            <div id="res-force" class="result-area"></div>
+        </div>
+
+        <div class="calc-card">
+            <h3>৪. কাজ ও ক্ষমতা (W = Fs)</h3>
+            <div class="input-group"><label>বল, F (N)</label><input type="number" id="f3" value="20"></div>
+            <div class="input-group"><label>সরণ, s (m)</label><input type="number" id="s3" value="5"></div>
+            <div class="input-group"><label>সময়, t (s)</label><input type="number" id="t3" value="2"></div>
+            <button class="solve-btn" onclick="solveWork()">Calculate Work & Power</button>
+            <div id="res-work" class="result-area"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showRes(id, html) {
+        const el = document.getElementById(id);
+        el.style.display = 'block';
+        el.innerHTML = html;
+    }
+
+    function solveMotion() {
+        const u = parseFloat(document.getElementById('u1').value || 0);
+        const a = parseFloat(document.getElementById('a1').value || 0);
+        const t = parseFloat(document.getElementById('t1').value || 0);
+        const v = u + (a * t);
+        showRes('res-motion', `
+            <div class="step">v = u + at</div>
+            <div class="step">v = ${u} + (${a} × ${t})</div>
+            <div class="final">শেষ বেগ (v) = ${v.toFixed(2)} m/s</div>
+        `);
+    }
+
+    function solveProjectile() {
+        const v0 = parseFloat(document.getElementById('pv0').value || 0);
+        const deg = parseFloat(document.getElementById('pdeg').value || 0);
+        const rad = deg * Math.PI / 180;
+        const g = 9.8;
+
+        // Calculations
+        const T = (2 * v0 * Math.sin(rad)) / g;
+        const H = (Math.pow(v0, 2) * Math.pow(Math.sin(rad), 2)) / (2 * g);
+        const R = (Math.pow(v0, 2) * Math.sin(2 * rad)) / g;
+
+        showRes('res-projectile', `
+            <div class="step">বিচরণকাল (T) = 2v₀sinθ / g</div>
+            <div class="final">T = ${T.toFixed(2)} s</div>
+            <hr style="border:0.5px solid #333; margin:10px 0">
+            <div class="step">সর্বোচ্চ উচ্চতা (H) = v₀²sin²θ / 2g</div>
+            <div class="final">H = ${H.toFixed(2)} m</div>
+            <hr style="border:0.5px solid #333; margin:10px 0">
+            <div class="step">পাল্লা (R) = v₀²sin2θ / g</div>
+            <div class="final">R = ${R.toFixed(2)} m</div>
+        `);
+    }
+
+    function solveForce() {
+        const m = parseFloat(document.getElementById('m2').value || 1);
+        const f = parseFloat(document.getElementById('f2').value || 0);
+        const a = f / m;
+        showRes('res-force', `
+            <div class="step">a = F / m</div>
+            <div class="final">ত্বরণ (a) = ${a.toFixed(2)} m/s²</div>
+        `);
+    }
+
+    function solveWork() {
+        const f = parseFloat(document.getElementById('f3').value || 0);
+        const s = parseFloat(document.getElementById('s3').value || 0);
+        const t = parseFloat(document.getElementById('t3').value || 1);
+        const w = f * s;
+        const p = w / t;
+        showRes('res-work', `
+            <div class="step">কাজ (W) = F × s = ${w.toFixed(2)} J</div>
+            <div class="final">ক্ষমতা (P) = W / t = ${p.toFixed(2)} W</div>
+        `);
+    }
+</script>
+
+</body>
+</html>
