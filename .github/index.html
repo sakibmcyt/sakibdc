@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Science World | Interactive Labs</title>
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --bg: #05070a;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --text-gray: #a0a0a0;
+            --accent-glow: rgba(0, 242, 255, 0.05);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: white;
+            overflow-x: hidden;
+            /* Modern Deep Space Gradient */
+            background: radial-gradient(circle at 50% -20%, #111827, #05070a);
+        }
+
+        /* Astronomy Hub style modern background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -1;
+            /* Soft fade to keep it subtle */
+            mask-image: radial-gradient(circle, black, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle, black, transparent 80%);
+        }
+
+        /* Navigation Bar - Transparent & Blurred */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 6%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(15px);
+            position: sticky;
+            top: 0; z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: 900; 
+            color: var(--primary); 
+            text-decoration: none; 
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+        }
+
+        .nav-links a { 
+            color: var(--text-gray); 
+            text-decoration: none; 
+            margin-left: 25px; 
+            font-size: 0.8rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            transition: 0.3s; 
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+
+        /* Hero Section with Glowing Text */
+        .hero {
+            padding: 120px 10% 80px;
+            text-align: center;
+            background: radial-gradient(rgba(0, 242, 255, 0.05) 0%, transparent 70%);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            margin-bottom: 15px;
+            background: linear-gradient(to bottom, #fff 40%, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+            font-weight: 800;
+        }
+
+        .hero p { color: var(--text-gray); font-size: 1.1rem; max-width: 700px; margin: 0 auto 40px; line-height: 1.6; }
+
+        /* Labs Grid - Modern Glassmorphism */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 0 10% 100px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 28px;
+            padding: 45px 35px;
+            transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            border-color: rgba(0, 242, 255, 0.4);
+            background: rgba(0, 242, 255, 0.03);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 18px;
+            font-weight: 700;
+        }
+
+        .card p {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 35px;
+        }
+
+        /* Astronomy style pill button */
+        .btn-enter {
+            display: inline-block;
+            text-align: center;
+            padding: 14px 0;
+            width: 100%;
+            background: transparent;
+            border: 1.5px solid var(--primary);
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.4s;
+        }
+
+        .btn-enter:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 25px rgba(0, 242, 255, 0.4);
+        }
+
+        footer {
+            text-align: center;
+            padding: 60px 20px;
+            color: #555;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            background: rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="#" class="logo">SCIENCE WORLD</a>
+    <div class="nav-links">
+        <a href="chemistry.html">Chemistry</a>
+        <a href="physics.html">Physics</a>
+        <a href="astronomy.html">Astronomy</a>
+    </div>
+</nav>
+
+<section class="hero">
+    <h1>Explore The Universe</h1>
+    <p>Advanced interactive simulations for Physics, Chemistry, and Astronomy. Master complex theories through practical digital tools. <br> -Sakib Chowdhury </p>
+</section>
+
+<section class="grid">
+    <div class="card">
+        <div>
+            <h2>Chemistry Lab</h2>
+            <p>Master Qualitative Analysis with real-time reaction visualizers. Identify unknown cations using professional-grade reagents.</p>
+        </div>
+        <a href="chemistry.html" class="btn-enter">Chemistry Lab</a>
+    </div>
+
+    <div class="card">
+        <div>
+            <h2>Physics Studio</h2>
+            <p>Visualize the invisible laws of motion and energy. Manipulate force, mass, and acceleration in a high-fidelity environment.</p>
+        </div>
+        <a href="physics.html" class="btn-enter">Launch Studio</a>
+    </div>
+
+    <div class="card">
+        <div>
+            <h2>Astronomy Hub</h2>
+            <p>Explore celestial mechanics and deep-space data. A cinematic journey through planetary systems and cosmic mysteries.</p>
+        </div>
+        <a href="astronomy.html" class="btn-enter">Explore Space</a>
+    </div>
+</section>
+
+<footer>
+    &copy; 2026 Science World Interactive. Developed for STEM Excellence. <br>
+    Lead Architect: Sakib Chowdhury
+</footer>
+
+</body>
+</html>
